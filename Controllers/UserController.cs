@@ -11,18 +11,33 @@ namespace CRUD_application_2.Controllers
         public ActionResult Index()
         {
             // Implement the Index method here
+            return View(userlist);
+
+            
+
+            
         }
  
         // GET: User/Details/5
         public ActionResult Details(int id)
         {
             // Implement the details method here
+            for (int i = 0; i < userlist.Count; i++)
+            {
+                if (userlist.ElementAt(i).Id == id)
+                {
+                    return View(userlist.ElementAt(i));
+                }
+            }
+            return new HttpNotFoundResult();
         }
  
-        // GET: User/Create
+        // GET: User/Createc
         public ActionResult Create()
         {
             //Implement the Create method here
+            User user = new User();
+            return View(user);
         }
  
         // POST: User/Create
@@ -30,6 +45,17 @@ namespace CRUD_application_2.Controllers
         public ActionResult Create(User user)
         {
             // Implement the Create method (POST) here
+            int greatestId = 0;
+            for (int i = 0; i < userlist.Count; i++)
+            {
+                if (userlist.ElementAt(i).Id > greatestId)
+                {
+                    greatestId = userlist.ElementAt(i).Id;
+                }
+            }
+            user.Id = greatestId + 1;
+            userlist.Add(user);
+            return RedirectToAction("Index");
         }
  
         // GET: User/Edit/5
@@ -37,6 +63,16 @@ namespace CRUD_application_2.Controllers
         {
             // This method is responsible for displaying the view to edit an existing user with the specified ID.
             // It retrieves the user from the userlist based on the provided ID and passes it to the Edit view.
+            // If no user is found with the provided ID, it returns a HttpNotFoundResult.
+            for (int i = 0; i < userlist.Count; i++)
+            {
+                if (userlist.ElementAt(i).Id == id)
+                {
+                    return View(userlist.ElementAt(i));
+                }
+            }
+
+            return new HttpNotFoundResult();
         }
  
         // POST: User/Edit/5
@@ -48,12 +84,33 @@ namespace CRUD_application_2.Controllers
             // If successful, it redirects to the Index action to display the updated list of users.
             // If no user is found with the provided ID, it returns a HttpNotFoundResult.
             // If an error occurs during the process, it returns the Edit view to display any validation errors.
+            for (int i = 0; i < userlist.Count; i++)
+            {
+                if (userlist.ElementAt(i).Id == id)
+                {
+                    userlist.ElementAt(i).Name = user.Name;
+                    userlist.ElementAt(i).Email = user.Email;
+                    return RedirectToAction("Index");
+                }
+            }
+            return new HttpNotFoundResult();
+
+
         }
  
         // GET: User/Delete/5
         public ActionResult Delete(int id)
         {
             // Implement the Delete method here
+            for (int i = 0; i < userlist.Count; i++)
+            {
+                if (userlist.ElementAt(i).Id == id)
+                {
+                    return View(userlist.ElementAt(i));
+                }
+            }
+
+            return new HttpNotFoundResult();
         }
  
         // POST: User/Delete/5
@@ -61,6 +118,15 @@ namespace CRUD_application_2.Controllers
         public ActionResult Delete(int id, FormCollection collection)
         {
             // Implement the Delete method (POST) here
+            for (int i = 0; i < userlist.Count; i++)
+            {
+                if (userlist.ElementAt(i).Id == id)
+                {
+                    userlist.RemoveAt(i);
+                    break;
+                }
+            }
+            return RedirectToAction("Index");
         }
     }
 }
